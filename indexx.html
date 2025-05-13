@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SessionStorage és LocalStorage</title>
+    <style>
+        #masodikdiv, #harmadikdik, #Kijelentkezés {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bejelentkezés</h1>
+    <br>
+    <div id="bejelentkezodiv">
+        <p>Felhasználónév:</p>
+        <input type="text" id="felhasznalonev"><br>
+        <p>Jelszó</p>
+        <input type="password" id="jelszo">
+    </div>
+    <button id="bejelentkezes">Bejelentkezés</button>
+    <br>
+    <div id="masodikdiv">
+        <p>Sikeres Bejelentkezés</p><br>
+        <p>Alapértelmezett bejelentkezési adatok: admin / admin</p>
+    </div>
+
+    <div id="harmadikdik">
+        <p>Jelszó módosítás:</p>
+        <input type="text" id="masikjelszo" value="admin">
+        <button id="modositjelszo">Módosít</button><br>
+
+        <p>Felhasználónév módosítás:</p>
+        <input type="text" id="masikfelhasznalonev" value="admin">
+        <button id="modositfelhasznalonev">Módosít</button><br>
+    </div> 
+
+    <button id="Kijelentkezés">Kijelentkezés</button>
+
+    <script>
+        const felhasznalonev = document.getElementById("felhasznalonev");
+        const jelszo = document.getElementById("jelszo");
+        const bejelentkezesgomb = document.getElementById("bejelentkezes");
+        const bejelentkezodiv = document.getElementById("bejelentkezodiv");
+        const masodikdiv = document.getElementById("masodikdiv");
+        const harmadikdik = document.getElementById("harmadikdik");
+        const kijelentkezogomb = document.getElementById("Kijelentkezés");
+        const modositfelhasznalonev = document.getElementById("modositfelhasznalonev");
+        const modositjelszo = document.getElementById("modositjelszo");
+        const inputboxjelszo = document.getElementById("masikjelszo");
+        const inputboxfelhasznalonev = document.getElementById("masikfelhasznalonev");
+
+        if (!localStorage.getItem("username") || !localStorage.getItem("password")) {
+            localStorage.setItem("username", "admin");
+            localStorage.setItem("password", "admin");
+        }
+
+        bejelentkezesgomb.addEventListener("click", () => {
+            const storedUsername = localStorage.getItem("username");
+            const storedPassword = localStorage.getItem("password");
+            if (felhasznalonev.value === storedUsername && jelszo.value === storedPassword || sessionStorage.length == 4) {
+                sessionStorage.setItem("loggedIn", "true");
+                alert("Sikeres bejelentkezés");
+                document.cookie = `username=${storedUsername}`;
+                const currentTime = new Date();
+                currentTime.setMinutes(currentTime.getMinutes() + 5);
+                document.cookie = `username=${storedUsername}; expires=${currentTime.toUTCString()}; path=/`;
+                bejelentkezodiv.style.visibility = 'hidden';
+                bejelentkezesgomb.style.visibility = 'hidden';
+                
+                masodikdiv.style.visibility = 'visible';
+                harmadikdik.style.visibility = 'visible';
+                kijelentkezogomb.style.visibility = 'visible';
+            } else {
+                alert("Sikertelen bejelentkezés");
+            }
+        });
+
+        modositfelhasznalonev.addEventListener("click", () => {
+            localStorage.setItem("username", inputboxfelhasznalonev.value);
+            alert("Felhasználónév módosítva!");
+        });
+
+        modositjelszo.addEventListener("click", () => {
+            localStorage.setItem("password", inputboxjelszo.value);
+            alert("Jelszó módosítva!");
+        });
+
+        kijelentkezogomb.addEventListener("click", () => {
+            alert("Sikeres kijelentkezés");
+            bejelentkezodiv.style.visibility = 'visible';
+            bejelentkezesgomb.style.visibility = 'visible';
+            masodikdiv.style.visibility = 'hidden';
+            harmadikdik.style.visibility = 'hidden';
+            kijelentkezogomb.style.visibility = 'hidden';
+            sessionStorage.clear();
+        });
+    </script>
+</body>
+</html>
